@@ -93,7 +93,11 @@ CREATE DATABASE testdb;
                 You are now connected to database "testdb" as user "testread".
                 testdb=>
 
-16.  сделайте select * from t1;
+15.  сделайте select * from t1;
+
+                testdb=> SELECT * FROM t1;
+                ERROR:  permission denied for table t1
+                testdb=>
 
 17.  получилось? (могло если вы делали сами не по шпаргалке и не упустили один существенный момент про который позже)
 напишите что именно произошло в тексте домашнего задания
@@ -102,31 +106,101 @@ CREATE DATABASE testdb;
 подсказка в шпаргалке под пунктом 20
 а почему так получилось с таблицей (если делали сами и без шпаргалки то может у вас все нормально)
 
+                testdb=> \dt
+                        List of relations
+                 Schema | Name | Type  |  Owner
+                --------+------+-------+----------
+                 public | t1   | table | postgres
+                (1 row)
+                
+                testdb=>
 
-18.  вернитесь в базу данных testdb под пользователем postgres
+Проблема с селектом, так как таблица создана в схеме public, а права мы дали для схемы testnm
 
-19.  удалите таблицу t1
+22.  вернитесь в базу данных testdb под пользователем postgres
 
-20.  создайте ее заново но уже с явным указанием имени схемы testnm
+                testdb=> \c testdb postgres
+                Password for user postgres:
+                You are now connected to database "testdb" as user "postgres".
+                testdb=#
 
-21.  вставьте строку со значением c1=1
+23.  удалите таблицу t1
 
-22.  зайдите под пользователем testread в базу данных testdb
+                testdb=# DROP TABLE t1;
+                DROP TABLE
+                testdb=#
 
-23.  сделайте select * from testnm.t1;
+24.  создайте ее заново но уже с явным указанием имени схемы testnm
+
+                testdb=# CREATE TABLE testnm.t1(c1 integer);
+                CREATE TABLE
+                testdb=#
+
+25.  вставьте строку со значением c1=1
+
+                testdb=# INSERT INTO testnm.t1 values(1);
+                INSERT 0 1
+                testdb=# select * from testnm.t1;
+                 c1
+                ----
+                  1
+                (1 row)
+                
+                testdb=#
+
+
+26.  зайдите под пользователем testread в базу данных testdb
+
+                testdb=# ^C
+                testdb=# \c testdb testread
+                Password for user testread:
+                You are now connected to database "testdb" as user "testread".
+                testdb=>
+
+27.  сделайте select * from testnm.t1;
 получилось?
-есть идеи почему? если нет - смотрите шпаргалку
-как сделать так чтобы такое больше не повторялось? если нет идей - смотрите шпаргалку
-сделайте select * from testnm.t1;
-получилось?
-есть идеи почему? если нет - смотрите шпаргалку
-сделайте select * from testnm.t1;
-получилось?
-ура!
+есть идеи почему?
 
-24.  теперь попробуйте выполнить команду create table t2(c1 integer); insert into t2 values (2);
-а как так? нам же никто прав на создание таблиц и insert в них под ролью readonly?
-есть идеи как убрать эти права? если нет - смотрите шпаргалку
-если вы справились сами то расскажите что сделали и почему, если смотрели шпаргалку - объясните что сделали и почему выполнив указанные в ней команды
-теперь попробуйте выполнить команду create table t3(c1 integer); insert into t2 values (2);
-расскажите что получилось и почему
+                testdb=> select * from testnm.t1;
+                ERROR:  permission denied for table t1
+                testdb=>
+
+та же самая ситуация, что была на вебинаре, мы сначала дали права, а потом создали таблицу
+
+28. как сделать так чтобы такое больше не повторялось
+
+надо опять зайти пользователем postgres и изменить права
+grant usage on SCHEMA testnm to readonly;
+grant SELECT on all TABLEs in SCHEMA testnm TO readonly;
+после чего переподключился testread
+
+29. сделайте select * from testnm.t1;
+
+получилось?
+да, теперь получилось
+
+                testdb=# \c testdb testread
+                Password for user testread:
+                You are now connected to database "testdb" as user "testread".
+                testdb=>
+                testdb=>
+                testdb=> SELECT * FROM testnm.t1;
+                 c1
+                ----
+                  1
+                (1 row)
+                
+                testdb=>
+
+
+
+30.  теперь попробуйте выполнить команду create table t2(c1 integer); insert into t2 values (2);
+
+                testdb=> create table t2 (c1 integer);
+                ERROR:  permission denied for schema public
+                LINE 1: create table t2 (c1 integer);
+                     ^
+ситуация соответствует, прав на public не предоставлялась роли readonly
+
+
+
