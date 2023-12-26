@@ -6,46 +6,46 @@ done
 
 2.  зайдите в созданный кластер под пользователем postgres
 
-    postgres=#
-    postgres=#
+        postgres=#
+        postgres=#
 
 3.  создайте новую базу данных testdb
 
 CREATE DATABASE testdb;
 
-    postgres=# CREATE DATABASE testdb;
-    CREATE DATABASE
-    postgres=#
+        postgres=# CREATE DATABASE testdb;
+        CREATE DATABASE
+        postgres=#
 
 4.  зайдите в созданную базу данных под пользователем postgres
 
-    postgres=# \c testdb;
-    You are now connected to database "testdb" as user "postgres".
-    testdb=#
+        postgres=# \c testdb;
+        You are now connected to database "testdb" as user "postgres".
+        testdb=#
 
 5.  создайте новую схему create schema testnm;
 
-    testdb=# create schema testnm;
-    CREATE SCHEMA
-    testdb=#
+        testdb=# create schema testnm;
+        CREATE SCHEMA
+        testdb=#
 
 7.  создайте новую таблицу t1 с одной колонкой c1 типа integer create table t1(c1 int);
 
-    testdb=# create table t1(c1 int);
-    CREATE TABLE
-    testdb=#
+        testdb=# create table t1(c1 int);
+        CREATE TABLE
+        testdb=#
 
 8.  вставьте строку со значением c1=1 insert into t1 values (1);
 
-    testdb=# insert into t1 values (1);
-    INSERT 0 1
-    testdb=# select * from t1;
-     c1
-    ----
-      1
-    (1 row)
-    
-    testdb=#
+        testdb=# insert into t1 values (1);
+        INSERT 0 1
+        testdb=# select * from t1;
+         c1
+        ----
+          1
+        (1 row)
+        
+        testdb=#
 
 
 9.  создайте новую роль readonly
