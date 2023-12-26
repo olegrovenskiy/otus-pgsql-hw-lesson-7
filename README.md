@@ -29,13 +29,13 @@ CREATE DATABASE testdb;
         CREATE SCHEMA
         testdb=#
 
-7.  создайте новую таблицу t1 с одной колонкой c1 типа integer create table t1(c1 int);
+6.  создайте новую таблицу t1 с одной колонкой c1 типа integer create table t1(c1 int);
 
         testdb=# create table t1(c1 int);
         CREATE TABLE
         testdb=#
 
-8.  вставьте строку со значением c1=1 insert into t1 values (1);
+7.  вставьте строку со значением c1=1 insert into t1 values (1);
 
         testdb=# insert into t1 values (1);
         INSERT 0 1
@@ -48,20 +48,50 @@ CREATE DATABASE testdb;
         testdb=#
 
 
-9.  создайте новую роль readonly
+8.  создайте новую роль readonly
+
+                testdb=# CREATE role readonly;
+                CREATE ROLE
+                testdb=#
 
 
-10.  дайте новой роли право на подключение к базе данных testdb
+9.  дайте новой роли право на подключение к базе данных testdb
 
-11.  дайте новой роли право на использование схемы testnm
+                testdb=# grant connect on DATABASE testdb TO readonly;
+                GRANT
+                testdb=#
 
-12.  дайте новой роли право на select для всех таблиц схемы testnm
 
-13.  создайте пользователя testread с паролем test123
+10.  дайте новой роли право на использование схемы testnm
 
-14.  дайте роль readonly пользователю testread
+                testdb=# grant usage on SCHEMA testnm to readonly;
+                GRANT
 
-15.  зайдите под пользователем testread в базу данных testdb
+
+11.  дайте новой роли право на select для всех таблиц схемы testnm
+
+                testdb=# grant SELECT on all TABLEs in SCHEMA testnm TO readonly;
+                GRANT
+                testdb=#
+
+12.  создайте пользователя testread с паролем test123
+
+                testdb=# CREATE USER testread with password 'test123';
+                CREATE ROLE
+                testdb=#
+
+13.  дайте роль readonly пользователю testread
+
+                testdb=# grant readonly TO testread;
+                GRANT ROLE
+                testdb=#
+
+14.  зайдите под пользователем testread в базу данных testdb
+
+                testdb=# \c testdb testread
+                Password for user testread:
+                You are now connected to database "testdb" as user "testread".
+                testdb=>
 
 16.  сделайте select * from t1;
 
