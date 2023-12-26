@@ -1,6 +1,6 @@
 # otus-pgsql-hw-lesson-7
 
-1.  создайте новый кластер PostgresSQL 14
+1.  создайте новый кластер PostgresSQL 15 (использовал ранеесозданны 15 версии)
 
 done
 
@@ -201,6 +201,9 @@ grant SELECT on all TABLEs in SCHEMA testnm TO readonly;
                 LINE 1: create table t2 (c1 integer);
                      ^
 ситуация соответствует, прав на public не предоставлялась роли readonly
+Проверил по шпаргалке к ДЗ, там есть
+** P.S.S. - у кого не получается создать табличку в public - в 15 версии права на CREATE TABLE по умолчанию отозваны у схемы PUBLIC, только USAGE
 
+у меня как раз 15 версия
 
 
